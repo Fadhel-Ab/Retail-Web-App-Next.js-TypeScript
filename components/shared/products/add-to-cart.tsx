@@ -63,16 +63,26 @@ const AddToCart = ({
   };
 
   return existItem ? (
-    <div className="">
-      <Button type="button" variant={"outline"} onClick={handleRemoveFromCart}>
+    <div className="flex items-center justify-center">
+      <Button
+        type="button"
+        variant={"outline"}
+        onClick={handleRemoveFromCart}
+        className={"grow"}
+      >
         {isPending ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
           <Minus className="h-4 w-5" />
         )}
       </Button>
-      <span className="px-2 text-2xl">{existItem.qty}</span>
-      <Button type="button" variant={"outline"} onClick={handleAddToCart}>
+      <span className="px-3 text-2xl">{existItem.qty}</span>
+      <Button
+        type="button"
+        variant={"outline"}
+        onClick={handleAddToCart}
+        className={"grow"}
+      >
         {isPending ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (

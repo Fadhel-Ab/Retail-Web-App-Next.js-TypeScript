@@ -1,3 +1,5 @@
+"use server";
+import CategoriesGrid from "@/components/categories";
 import ProductList from "@/components/shared/products/product-list";
 import { Button } from "@/components/ui/button";
 import { getLatestProducts } from "@/lib/actions/products.actions";
@@ -31,7 +33,7 @@ const Homepage = async ({
 
   return (
     <>
-      <section className="bg-gradient-to-r from-zinc-900 to-zinc-800 text-white py-16 px-6 text-center rounded-2xl my-6 shadow-lg max-w-7xl mx-auto">
+      <section className="bg-linear-to-r from-zinc-900 to-zinc-800 text-white py-16 px-6 text-center rounded-2xl my-6 shadow-lg max-w-7xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
           {isAr
             ? "اكتشف مجموعتنا الحصرية"
@@ -51,6 +53,10 @@ const Homepage = async ({
           </Button>
         </Link>
       </section>
+      <h2 className="h2-bold mb-4 ">
+        {isAr ? "تسوق حسب الفئة" : "Shop by Category"}
+      </h2>
+      <CategoriesGrid locale={locale} />
       <div className="max-w-7xl mx-auto px-4">
         <ProductList
           data={data}

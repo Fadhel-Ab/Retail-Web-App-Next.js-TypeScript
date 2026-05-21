@@ -9,10 +9,15 @@ import prisma from "../prisma";
 import { getUserById } from "./users.actions";
 import { get } from "http";
 import { getLocale } from "next-intlayer/server";
-import { createInsertOrderSchema, orderResponseSchema, ordersArraySchema } from "../validators";
+import {
+  createInsertOrderSchema,
+  orderResponseSchema,
+  ordersArraySchema,
+} from "../validators";
 import { CartItem } from "@/types";
 import { toPlainObject } from "../utils";
 import { PAGE_SIZE } from "../constants";
+import { Prisma } from "@prisma/client";
 
 //create order and create the order item
 export async function createOrder() {
@@ -149,19 +154,40 @@ export async function getMyOrders({
   if (!userId) throw new Error("User is not found ");
   const rawData = await prisma.order.findMany({
     where: { userId: userId },
-    orderBy:{createdAt:"desc"},
-    take:limit,
-    skip:(page -1) * limit
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip: (page - 1) * limit,
   });
-  
-const data=z.array(ordersArraySchema).parse(rawData);
 
-  const dataCount =await prisma.order.count({
+  const data = z.array(ordersArraySchema).parse(rawData);
+
+  const dataCount = await prisma.order.count({
     where: { userId: userId },
   });
 
   return {
     data,
-    totalPages: Math.ceil(dataCount / limit) // total number of orders divided by the number of orders i want to display on each page
-  }
+    totalPages: Math.ceil(dataCount / limit), // total number of orders divided by the number of orders i want to display on each page
+  };
+}
+
+// get the sales data and order summary
+export async function getOrderSummary() {
+  // get counts for each resource
+  const ordersCounts = await prisma.order.count();
+  const productsCounts = await prisma.product.count();
+  const usersCounts = await prisma.user.count();
+
+  // calculate the total sales
+  const totalSales = await prisma.order.aggregate({
+    _sum: {
+      totalPrice: true,
+    },
+  });
+  //get monthly sales
+  const rawSalesData = await prisma.$queryRaw<
+    Array<{ month: string; totalSales: Prisma.Decimal }>
+  >`SELECT to_char("createdAt", 'MM/YY') as "month", sum("totalPrice") as "totalSales" FROM "Order" GROUP By to_char("createdAt", 'MM/YY')`;
+  // get latest sales
+ 
 }

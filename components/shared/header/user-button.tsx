@@ -25,7 +25,7 @@ const UserButton = async ({ locale }: { locale: string }) => {
 
   const firstInitial = session.user?.name?.charAt(0).toUpperCase() ?? "U";
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-2 items-center font-medium">
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
@@ -43,7 +43,7 @@ const UserButton = async ({ locale }: { locale: string }) => {
         <DropdownMenuContent className={"w-56"} align="end">
           <DropdownMenuGroup>
             <DropdownMenuLabel className={"font-normal"}>
-              <div className="flex flex-col space-y-1">
+              <div className="flex flex-col">
                 <div className="text-sm font-medium leading-none">
                   {session.user?.name}
                 </div>
@@ -52,7 +52,7 @@ const UserButton = async ({ locale }: { locale: string }) => {
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuItem className={'mt-3'}>
+            <DropdownMenuItem className={"mt-1"}>
               <Link href={`/${locale}/user/profile`} className="w-full">
                 {locale === "en" ? "Profile" : "الملف الشخصي"}
               </Link>
@@ -62,17 +62,23 @@ const UserButton = async ({ locale }: { locale: string }) => {
                 {locale === "en" ? "Order History" : "سجل الطلبات"}
               </Link>
             </DropdownMenuItem>
+            {session?.user?.role === "admin" && (
+              <DropdownMenuItem>
+                <Link href={`/${locale}/admin/overview`} className="w-full">
+                  {locale === "en" ? "Admin" : "الإدارة"}
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem className={"p-0 mb-1 "}>
               <form action={signOutUser} className="flex my-2 w-full">
                 <Button
                   className={
-                    "w-full py-4 px-2 h-4 justify-start cursor-pointer"
+                    "w-full py-2 px-2 h-4 justify-start cursor-pointer"
                   }
                   variant={"ghost"}
                   type="submit"
                 >
                   {" "}
-                  <LogOut className="me-2" />{" "}
                   {locale === "en" ? "Sign Out" : "تسجيل الخروج"}
                 </Button>
               </form>

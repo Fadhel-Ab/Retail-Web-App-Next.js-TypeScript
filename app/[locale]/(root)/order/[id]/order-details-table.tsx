@@ -15,9 +15,6 @@ import Image from "next/image";
 import PlaceOrderForm from "../../place-order/place-order-form";
 import BenefitPayButton from "./payment-benfit";
 
-
-
-
 export default function OrderDetailsTable({
   order,
   locale,
@@ -186,6 +183,8 @@ export default function OrderDetailsTable({
                     href={
                       "https://developers.tap.company/reference/testing-cards"
                     }
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     {locale === "en" ? "Click Here" : "اضغط هنا"}
                   </Link>

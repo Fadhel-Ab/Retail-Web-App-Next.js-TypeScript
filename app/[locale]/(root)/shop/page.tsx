@@ -22,7 +22,7 @@ export default async function ShopPage({ params }: ShopPageProps) {
   });
   const data=z.array(ProductResponseSchema).parse(products);
   return (
-    <main className="max-w-7xl mx-auto px-4 py-12 min-h-screen">
+    <main className="mx-auto px-4 py-12 min-h-screen">
       <header className="border-b border-zinc-200 pb-6 mb-10">
         <h1 className="text-3xl font-extrabold tracking-tight  text-accent-foreground md:text-4xl">
           {isAr ? "متجرنا الكامل" : "Our Full Shop"}

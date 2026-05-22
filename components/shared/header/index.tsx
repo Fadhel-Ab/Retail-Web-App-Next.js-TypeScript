@@ -11,7 +11,7 @@ export default  function Header({locale}:{locale:string}) {
   const {header} = getPageContent("page",locale);
   return (
     <header className="w-full border-b">
-      <div className="wrapper flex-between">
+      <div className="wrapper flex-between max-w-450">
         <div className="flex-start">
           <Link href={`/${locale}`} className="flex-start">
             <Image

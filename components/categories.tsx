@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function CategoriesGrid({locale}:{locale:string}) {
   return (
-    <div className="grid grid-cols-2 lg:flex justify-between gap-4 my-10 max-w-7xl mx-auto">
+    <div className="grid grid-cols-4 lg:flex justify-between gap-4 my-10  mx-auto">
       {categories.map((category) => (
         <Link
           key={category.id}

@@ -6,7 +6,7 @@ export const SERVER_URL =
   process.env.NEXT_PUBLIC_SERVER_URL ||
   "https://retail-web-app-swart.vercel.app/";
 export const LATEST_PRODUCTS_LIMIT =
-  Number(process.env.NEXT_PUBLIC_LATEST_PRODUCTS_LIMIT) || 4;
+  Number(process.env.NEXT_PUBLIC_LATEST_PRODUCTS_LIMIT) || 5;
 export const defaultSignInValues = {
   email: "",
   password: "",

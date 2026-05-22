@@ -21,7 +21,7 @@ const ProductCard = async ({
   const translatedBrand = locale === "en" ? product.brand : product.brandAr;
   return (
     <Card className="w-full max-w-sm hover:scale-105 transition-transform duration-300">
-      <CardHeader className="w-75 h-75 ">
+      <CardHeader className="w-75 h-75 mx-auto ">
         <Link href={`/${locale}/product/${product.slug}`}>
           <Image
             className="object-cover"
@@ -29,6 +29,7 @@ const ProductCard = async ({
             alt={translatedName}
             height={300}
             width={300}
+            
             priority={true}
           />
         </Link>

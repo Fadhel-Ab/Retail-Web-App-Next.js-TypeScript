@@ -17,7 +17,7 @@ export default async function RootLayout({
   return (
     <div className="flex h-screen flex-col">
       <Header locale={locale} />
-      <main className="flex-1 wrapper">{children}</main>
+      <main className="flex-1 wrapper max-w-450">{children}</main>
       <Footer locale={locale} />
     </div>
   );

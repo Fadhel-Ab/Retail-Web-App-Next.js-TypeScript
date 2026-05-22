@@ -33,7 +33,7 @@ const Homepage = async ({
 
   return (
     <>
-      <section className="bg-linear-to-r from-zinc-900 to-zinc-800 text-white py-16 px-6 text-center rounded-2xl my-6 shadow-lg max-w-7xl mx-auto">
+      <section className="bg-linear-to-r from-zinc-900 to-zinc-800 text-white py-16 px-6 text-center rounded-2xl my-6 shadow-lg  mx-auto">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
           {isAr
             ? "اكتشف مجموعتنا الحصرية"
@@ -57,11 +57,11 @@ const Homepage = async ({
         {isAr ? "تسوق حسب الفئة" : "Shop by Category"}
       </h2>
       <CategoriesGrid locale={locale} />
-      <div className="max-w-7xl mx-auto px-4">
+      <div className=" mx-auto px-4">
         <ProductList
           data={data}
           title={isAr ? "المنتجات المميزة" : "Featured Products"}
-          limit={4}
+          limit={5}
           locale={locale}
         />
       </div>

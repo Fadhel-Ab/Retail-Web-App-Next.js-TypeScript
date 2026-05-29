@@ -1,13 +1,12 @@
 "use server";
 
-import z, { date, success } from "zod";
+import z from "zod";
 import { formatError } from "../server-side-utils";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { auth } from "@/auth";
 import { getMyCart } from "./cart.actions";
 import prisma from "../prisma";
 import { getUserById } from "./users.actions";
-import { get } from "http";
 import { getLocale } from "next-intlayer/server";
 import {
   createInsertOrderSchema,
@@ -15,7 +14,6 @@ import {
   ordersArraySchema,
 } from "../validators";
 import { CartItem } from "@/types";
-import { toPlainObject } from "../utils";
 import { PAGE_SIZE } from "../constants";
 import { Prisma } from "@prisma/client";
 
@@ -174,9 +172,11 @@ export async function getMyOrders({
 // get the sales data and order summary
 export async function getOrderSummary() {
   // get counts for each resource
-  const ordersCounts = await prisma.order.count();
-  const productsCounts = await prisma.product.count();
-  const usersCounts = await prisma.user.count();
+  const [ordersCount, productsCount, usersCount] = await Promise.all([
+    prisma.order.count(),
+    prisma.product.count(),
+    prisma.user.count(),
+  ]);
 
   // calculate the total sales
   const totalSales = await prisma.order.aggregate({
@@ -184,10 +184,40 @@ export async function getOrderSummary() {
       totalPrice: true,
     },
   });
-  //get monthly sales
+
+  // get monthly sales
   const rawSalesData = await prisma.$queryRaw<
     Array<{ month: string; totalSales: Prisma.Decimal }>
-  >`SELECT to_char("createdAt", 'MM/YY') as "month", sum("totalPrice") as "totalSales" FROM "Order" GROUP By to_char("createdAt", 'MM/YY')`;
+  >`SELECT to_char("createdAt", 'MM/YY') as "month", sum("totalPrice") as "totalSales" FROM "Order" GROUP BY to_char("createdAt", 'MM/YY') ORDER BY min("createdAt")`;
+
   // get latest sales
- 
+  const latestSales = await prisma.order.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 6,
+    select: {
+      id: true,
+      createdAt: true,
+      totalPrice: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  return {
+    ordersCount,
+    productsCount,
+    usersCount,
+    totalSales: totalSales._sum.totalPrice ?? 0,
+    salesData: rawSalesData.map((entry) => ({
+      month: entry.month,
+      totalSales: Number(entry.totalSales),
+    })),
+    latestSales: latestSales.map((sale) => ({
+      ...sale,
+      totalPrice: Number(sale.totalPrice),
+    })),
+  };
 }

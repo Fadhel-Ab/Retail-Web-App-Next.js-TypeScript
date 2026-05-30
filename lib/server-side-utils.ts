@@ -25,11 +25,15 @@ export async function formatError(error: any) {
       const driverFields = (error?.meta as any)?.driverAdapterError?.cause
         ?.constraint?.fields;
 
-      const field = "field";
+      const field =
+        (Array.isArray(driverFields) ? driverFields[0] : undefined) ??
+        (Array.isArray(target) ? target[0] : undefined) ??
+        "field";
+      const fieldName = field.charAt(0).toUpperCase() + field.slice(1);
 
       return locale === "en"
-        ? `${(driverFields[0] ?? field).charAt(0).toUpperCase() + (driverFields[0] ?? field).slice(1)} already exists.`
-        : `البريد الإلكتروني موجود بالفعل`;
+        ? `${fieldName} already exists.`
+        : `القيمة موجودة بالفعل`;
     }
   }
 

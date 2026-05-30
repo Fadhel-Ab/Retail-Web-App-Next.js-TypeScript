@@ -21,9 +21,16 @@ export default  function Header({locale}:{locale:string}) {
               height={48}
               priority={true}
             />
+
             <span className="hidden lg:block font-bold text-2xl ms-3">
               {header.title}
             </span>
+          </Link>
+          <Link
+            href={`/${locale}/shop`}
+            className=" font-medium text-gray-700 transition-colors hover:text-amber-600 ms-6"
+          >
+            Browse Products
           </Link>
         </div>
         <Menu locale={locale} />

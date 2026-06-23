@@ -34,7 +34,7 @@ export default async function AdminLayout({
               ></Image>
             </Link>
             <MainNav locale={locale} />
-            <div className="ms-auto items-center flex space-x-4">
+            <div className="ms-auto items-center flex space-x-27">
               <div>
                 <Input
                   type="search"

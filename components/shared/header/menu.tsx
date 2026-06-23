@@ -5,6 +5,7 @@ import Link from "next/link";
 import SignInButton from "@/components/shared/header/sign-in-button";
 import { LocaleSwitcher } from "./language-select";
 import { getHTMLTextDir } from "intlayer";
+import AdminDemo from "./admin-demo";
 import { useIntlayer } from "next-intlayer/server";
 import {
   Sheet,
@@ -23,7 +24,7 @@ const Menu = ({ locale }: { locale: string }) => {
  
   return (
     <div className="flex justify-end gap-3">
-      <nav className="hidden md:flex w-full max-w-xs gap-1">
+      <nav className="hidden md:flex w-full max-w-xs gap-1 justify-end items-center">
         <LocaleSwitcher />
         <ModeToggle />
         <Button
@@ -33,6 +34,7 @@ const Menu = ({ locale }: { locale: string }) => {
         >
           <ShoppingCart /> {header.cart}
         </Button>
+        <AdminDemo locale={locale} />
         <UserButton locale={locale} />
       </nav>
       <nav className="md:hidden">

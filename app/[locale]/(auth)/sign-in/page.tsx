@@ -43,6 +43,21 @@ const SignInPage = async ({
     }
   return (
     <div className="w-full max-w-md mx-auto">
+      {/* Recruiter Demo Credentials */}
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm dark:border-blue-800 dark:bg-blue-950">
+        <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2">
+          🔑 Demo Credentials
+        </p>
+        <div className="space-y-1 text-blue-600 dark:text-blue-400">
+          <p>
+            <span className="font-medium">Admin:</span> admin@example.com /
+            123456
+          </p>
+          <p>
+            <span className="font-medium">User:</span> user@example.com / 123456
+          </p>
+        </div>
+      </div>
       <Card>
         <CardHeader className="space-y-4">
           <Link href={`/${locale}`} className="flex-center">
@@ -64,9 +79,7 @@ const SignInPage = async ({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <CredentialSignInForm
-            locale={locale}
-          ></CredentialSignInForm>
+          <CredentialSignInForm locale={locale}></CredentialSignInForm>
         </CardContent>
       </Card>
     </div>

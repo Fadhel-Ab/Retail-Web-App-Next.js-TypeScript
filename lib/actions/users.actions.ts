@@ -14,8 +14,21 @@ import { prisma } from "@/lib/prisma";
 import { formatError } from "@/lib/server-side-utils";
 import { getLocale } from "next-intlayer/server";
 import { ShippingAddress, paymentMethod } from "@/types";
-import { success, z } from "zod";
-import { AwardIcon } from "lucide-react";
+import { PAGE_SIZE } from "@/lib/constants";
+import { revalidatePath } from "next/cache";
+
+async function requireAdmin() {
+  const session = await auth();
+  if (session?.user?.role !== "admin") {
+    throw new Error("You are not authorized to manage users.");
+  }
+  return session;
+}
+
+function revalidateAdminUsersPaths() {
+  revalidatePath("/en/admin/users");
+  revalidatePath("/ar/admin/users");
+}
 
 //Sign in user with credentials
 export async function signInWithCredentials(
@@ -200,5 +213,94 @@ export async function updateProfile(
       success: false,
       message: formatError(error),
     };
+  }
+}
+
+// get all users (admin only, paginated)
+export async function getAllUsers({
+  limit = PAGE_SIZE,
+  page = 1,
+}: {
+  limit?: number;
+  page?: number;
+}) {
+  await requireAdmin();
+
+  const [users, dataCount] = await Promise.all([
+    prisma.user.findMany({
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      skip: (page - 1) * limit,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    }),
+    prisma.user.count(),
+  ]);
+
+  return {
+    data: users,
+    totalPages: Math.ceil(dataCount / limit),
+  };
+}
+
+// delete a user (admin only)
+export async function deleteUser(id: string, locale?: string) {
+  try {
+    const session = await requireAdmin();
+    if (session?.user?.id === id) {
+      return {
+        success: false,
+        message:
+          locale === "ar"
+            ? "لا يمكنك حذف حسابك الخاص."
+            : "You cannot delete your own account.",
+      };
+    }
+
+    await prisma.user.delete({ where: { id } });
+    revalidateAdminUsersPaths();
+
+    return {
+      success: true,
+      message: locale === "ar" ? "تم حذف المستخدم بنجاح." : "User deleted successfully.",
+    };
+  } catch (error) {
+    return { success: false, message: await formatError(error) };
+  }
+}
+
+// toggle a user's role between admin and user (admin only)
+export async function updateUserRole(
+  id: string,
+  role: "admin" | "user",
+  locale?: string,
+) {
+  try {
+    const session = await requireAdmin();
+    if (session?.user?.id === id) {
+      return {
+        success: false,
+        message:
+          locale === "ar"
+            ? "لا يمكنك تغيير صلاحيتك الخاصة."
+            : "You cannot change your own role.",
+      };
+    }
+
+    await prisma.user.update({ where: { id }, data: { role } });
+    revalidateAdminUsersPaths();
+
+    return {
+      success: true,
+      message:
+        locale === "ar" ? "تم تحديث صلاحية المستخدم." : "User role updated.",
+    };
+  } catch (error) {
+    return { success: false, message: await formatError(error) };
   }
 }

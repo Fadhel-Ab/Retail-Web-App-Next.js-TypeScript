@@ -19,6 +19,18 @@ export const getLatestProducts = async () => {
   return z.array(ProductResponseSchema).parse(products);
 };
 
+export const getFeaturedProducts = async (limit = LATEST_PRODUCTS_LIMIT) => {
+  const products = await prisma.product.findMany({
+    where: { isFeatured: true },
+    take: limit,
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return z.array(ProductResponseSchema).parse(products);
+};
+
 export const getProductBySlug = async (slug: string) => {
   const response = await prisma.product.findFirst({
     where: { slug: slug },

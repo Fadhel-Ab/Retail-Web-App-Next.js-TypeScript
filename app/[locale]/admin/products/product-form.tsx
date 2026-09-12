@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createProduct, updateProduct } from "@/lib/actions/products.actions";
 import { insertProductSchema } from "@/lib/validators";
+import { categories } from "@/lib/categories";
 import { Product } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus, Loader, Plus, Save, Trash2, X } from "lucide-react";
@@ -108,7 +109,36 @@ export default function ProductForm({ locale, product }: ProductFormProps) {
       : locale === "en"
         ? "Create Product"
         : "إنشاء المنتج",
+    name: locale === "en" ? "Name" : "الاسم",
+    nameAr: locale === "en" ? "Arabic Name" : "الاسم بالعربية",
+    slug: locale === "en" ? "Slug" : "الرابط المختصر",
+    category: locale === "en" ? "Category" : "الفئة",
+    brand: locale === "en" ? "Brand" : "العلامة التجارية",
+    brandAr: locale === "en" ? "Arabic Brand" : "العلامة التجارية بالعربية",
+    price: locale === "en" ? "Price" : "السعر",
+    stock: locale === "en" ? "Stock" : "المخزون",
+    banner: locale === "en" ? "Banner URL" : "رابط البانر",
+    description: locale === "en" ? "Description" : "الوصف",
+    descriptionAr: locale === "en" ? "Arabic Description" : "الوصف بالعربية",
+    selectCategory: locale === "en" ? "Select a category" : "اختر فئة",
   };
+
+  const handleCategoryChange = (slug: string) => {
+    const selected = categories.find((category) => category.slug === slug);
+    if (!selected) return;
+    form.setValue("category", selected.name, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    form.setValue("categoryAr", selected.nameAr, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
+
+  const selectedCategorySlug =
+    categories.find((category) => category.name === form.watch("category"))
+      ?.slug ?? "";
 
   const onSubmit: SubmitHandler<ProductFormValues> = async (values) => {
     startTransition(async () => {
@@ -214,45 +244,59 @@ export default function ProductForm({ locale, product }: ProductFormProps) {
       </div>
 
       <FieldGroup className="grid gap-5 md:grid-cols-2">
-        <ProductInput control={form.control} name="name" label="Name" />
+        <ProductInput control={form.control} name="name" label={text.name} />
         <ProductInput
           control={form.control}
           name="nameAr"
-          label="Arabic Name"
+          label={text.nameAr}
         />
-        <ProductInput control={form.control} name="slug" label="Slug" />
-        <ProductInput control={form.control} name="category" label="Category" />
-        <ProductInput
-          control={form.control}
-          name="categoryAr"
-          label="Arabic Category"
-        />
-        <ProductInput control={form.control} name="brand" label="Brand" />
+        <ProductInput control={form.control} name="slug" label={text.slug} />
+        <Field data-invalid={Boolean(form.formState.errors.category)}>
+          <FieldLabel>{text.category}</FieldLabel>
+          <select
+            className="border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            value={selectedCategorySlug}
+            onChange={(event) => handleCategoryChange(event.target.value)}
+          >
+            <option value="" disabled>
+              {text.selectCategory}
+            </option>
+            {categories.map((category) => (
+              <option key={category.slug} value={category.slug}>
+                {locale === "en" ? category.name : category.nameAr}
+              </option>
+            ))}
+          </select>
+          {form.formState.errors.category && (
+            <FieldError errors={[form.formState.errors.category]} />
+          )}
+        </Field>
+        <ProductInput control={form.control} name="brand" label={text.brand} />
         <ProductInput
           control={form.control}
           name="brandAr"
-          label="Arabic Brand"
+          label={text.brandAr}
         />
-        <ProductInput control={form.control} name="price" label="Price" />
+        <ProductInput control={form.control} name="price" label={text.price} />
         <ProductInput
           control={form.control}
           name="stock"
-          label="Stock"
+          label={text.stock}
           inputType="number"
         />
-        <ProductInput control={form.control} name="banner" label="Banner URL" />
+        <ProductInput control={form.control} name="banner" label={text.banner} />
       </FieldGroup>
 
       <FieldGroup className="grid gap-5 md:grid-cols-2">
         <ProductTextarea
           control={form.control}
           name="description"
-          label="Description"
+          label={text.description}
         />
         <ProductTextarea
           control={form.control}
           name="descriptionAr"
-          label="Arabic Description"
+          label={text.descriptionAr}
         />
       </FieldGroup>
 

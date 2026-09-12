@@ -47,7 +47,9 @@ const AdminOverviewPage = async ({
     return (
       <div className="p-4">
         <p className="text-lg font-medium">
-          You are not authorized to view this page.
+          {locale === "en"
+            ? "You are not authorized to view this page."
+            : "غير مصرح لك بعرض هذه الصفحة."}
         </p>
       </div>
     );

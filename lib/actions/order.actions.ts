@@ -16,6 +16,19 @@ import {
 import { CartItem } from "@/types";
 import { PAGE_SIZE } from "../constants";
 import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+
+async function requireAdmin() {
+  const session = await auth();
+  if (session?.user?.role !== "admin") {
+    throw new Error("You are not authorized to manage orders.");
+  }
+}
+
+function revalidateAdminOrdersPaths() {
+  revalidatePath("/en/admin/orders");
+  revalidatePath("/ar/admin/orders");
+}
 
 //create order and create the order item
 export async function createOrder() {
@@ -220,4 +233,117 @@ export async function getOrderSummary() {
       totalPrice: Number(sale.totalPrice),
     })),
   };
+}
+
+// get all orders (admin only, paginated)
+export const getAllOrders = async ({
+  limit = PAGE_SIZE,
+  page = 1,
+}: {
+  limit?: number;
+  page?: number;
+}) => {
+  await requireAdmin();
+
+  const [orders, dataCount] = await Promise.all([
+    prisma.order.findMany({
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      skip: (page - 1) * limit,
+      include: {
+        orderItems: true,
+        user: { select: { name: true, email: true } },
+      },
+    }),
+    prisma.order.count(),
+  ]);
+
+  return {
+    data: z.array(orderResponseSchema).parse(orders),
+    totalPages: Math.ceil(dataCount / limit),
+  };
+};
+
+// delete an order (admin only)
+export async function deleteOrder(id: string, locale?: string) {
+  try {
+    await requireAdmin();
+    await prisma.order.delete({ where: { id } });
+    revalidateAdminOrdersPaths();
+
+    return {
+      success: true,
+      message:
+        locale === "ar" ? "تم حذف الطلب بنجاح." : "Order deleted successfully.",
+    };
+  } catch (error) {
+    return { success: false, message: await formatError(error) };
+  }
+}
+
+// mark an order as paid (admin only)
+export async function markOrderAsPaid(id: string, locale?: string) {
+  try {
+    await requireAdmin();
+    const order = await prisma.order.findFirst({ where: { id } });
+    if (!order) throw new Error("Order not found");
+    if (order.isPaid) {
+      return {
+        success: false,
+        message: locale === "ar" ? "الطلب مدفوع بالفعل." : "Order is already paid.",
+      };
+    }
+
+    await prisma.order.update({
+      where: { id },
+      data: { isPaid: true, paidAt: new Date() },
+    });
+    revalidateAdminOrdersPaths();
+
+    return {
+      success: true,
+      message:
+        locale === "ar" ? "تم تعليم الطلب كمدفوع." : "Order marked as paid.",
+    };
+  } catch (error) {
+    return { success: false, message: await formatError(error) };
+  }
+}
+
+// mark an order as delivered (admin only)
+export async function markOrderAsDelivered(id: string, locale?: string) {
+  try {
+    await requireAdmin();
+    const order = await prisma.order.findFirst({ where: { id } });
+    if (!order) throw new Error("Order not found");
+    if (!order.isPaid) {
+      return {
+        success: false,
+        message:
+          locale === "ar"
+            ? "يجب دفع الطلب أولاً قبل تسليمه."
+            : "Order must be paid before it can be delivered.",
+      };
+    }
+    if (order.isDelivered) {
+      return {
+        success: false,
+        message: locale === "ar" ? "تم تسليم الطلب بالفعل." : "Order is already delivered.",
+      };
+    }
+
+    await prisma.order.update({
+      where: { id },
+      data: { isDelivered: true, deliveredAt: new Date() },
+    });
+    revalidateAdminOrdersPaths();
+
+    return {
+      success: true,
+      message:
+        locale === "ar" ? "تم تعليم الطلب كمسلَّم." : "Order marked as delivered.",
+    };
+  } catch (error) {
+    return { success: false, message: await formatError(error) };
+  }
 }

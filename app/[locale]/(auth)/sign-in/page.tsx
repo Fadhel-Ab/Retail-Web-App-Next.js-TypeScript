@@ -44,17 +44,22 @@ const SignInPage = async ({
   return (
     <div className="w-full max-w-md mx-auto">
       {/* Recruiter Demo Credentials */}
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm dark:border-blue-800 dark:bg-blue-950">
-        <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2">
-          🔑 Demo Credentials
+      <div className="rounded-lg border border-brand/30 bg-brand/10 p-4 text-sm mb-4">
+        <p className="font-semibold text-brand mb-2">
+          🔑 {locale === "en" ? "Demo Credentials" : "بيانات دخول تجريبية"}
         </p>
-        <div className="space-y-1 text-blue-600 dark:text-blue-400">
+        <div className="space-y-1 text-foreground/80">
           <p>
-            <span className="font-medium">Admin:</span> admin@example.com /
-            123456
+            <span className="font-medium">
+              {locale === "en" ? "Admin:" : "المشرف:"}
+            </span>{" "}
+            admin@example.com / 123456
           </p>
           <p>
-            <span className="font-medium">User:</span> user@example.com / 123456
+            <span className="font-medium">
+              {locale === "en" ? "User:" : "المستخدم:"}
+            </span>{" "}
+            user@example.com / 123456
           </p>
         </div>
       </div>

@@ -10,8 +10,8 @@ import { getPageContent } from "@/lib/custom-hooks/intlayer-hook";
 export default  function Header({locale}:{locale:string}) {
   const {header} = getPageContent("page",locale);
   return (
-    <header className="w-full border-b">
-      <div className="wrapper flex-between max-w-450 ">
+    <header className="w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <div className="wrapper flex-between max-w-450 py-1">
         <div className="flex-start">
           <Link href={`/${locale}`} className="flex-start">
             <Image
@@ -22,15 +22,15 @@ export default  function Header({locale}:{locale:string}) {
               priority={true}
             />
 
-            <span className="hidden lg:block font-bold text-2xl ms-3">
+            <span className="hidden lg:block font-bold text-2xl tracking-tight ms-3">
               {header.title}
             </span>
           </Link>
           <Link
             href={`/${locale}/shop`}
-            className=" font-medium text-gray-700 transition-colors hover:text-amber-600 ms-6"
+            className="font-medium uppercase text-sm tracking-wide text-muted-foreground transition-colors hover:text-brand ms-6"
           >
-            Browse Products
+            {locale === "en" ? "Browse Products" : "تصفح المنتجات"}
           </Link>
         </div>
         <Menu locale={locale} />

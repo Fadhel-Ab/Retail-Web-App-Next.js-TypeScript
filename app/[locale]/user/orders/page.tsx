@@ -102,7 +102,7 @@ const OrdersPage = async ({
             ))}
           </TableBody>
         </Table>
-        {orders.totalPages > 1 && (<Pagination page={Number(page) || 1} totalPages={orders?.totalPages}></Pagination>)}
+        {orders.totalPages > 1 && (<Pagination page={Number(page) || 1} totalPages={orders?.totalPages} locale={locale}></Pagination>)}
       </div>
     </div>
   );

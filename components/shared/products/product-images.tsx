@@ -18,14 +18,14 @@ const ProductImages = ({ images }: { images: string[] }) => {
       <div className="flex">
         {images.map((image, index) => (
           <div
-            key={image}
+            key={index}
             onClick={() => setCurrent(index)}
             className={cn(
-              "border me-2 cursor-pointer hover:border-orange-600",
-              current === index && "border-orange-500",
+              "border me-2 cursor-pointer hover:border-brand",
+              current === index && "border-brand",
             )}
           >
-            <Image src={images[index]} alt="image" height={100} width={100} />
+            <Image src={image} alt="image" height={100} width={100} />
           </div>
         ))}
       </div>

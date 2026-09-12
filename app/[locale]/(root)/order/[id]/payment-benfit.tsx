@@ -5,8 +5,15 @@ import { createPaymentCharge } from "@/lib/actions/payment.action";
 import { Button } from "@/components/ui/button";
 import { getOrderById } from "@/lib/actions/order.actions";
 
-export default function BenefitPayButton({ orderId }: { orderId: string }) {
+export default function BenefitPayButton({
+  orderId,
+  locale = "en",
+}: {
+  orderId: string;
+  locale?: string;
+}) {
   const [isPending, startTransition] = useTransition();
+  const isAr = locale !== "en";
 
  
   const handlePayment = () => {
@@ -24,7 +31,13 @@ export default function BenefitPayButton({ orderId }: { orderId: string }) {
       disabled={isPending}
       className="bg-[#e90030] hover:bg-[#c70029] text-white w-full"
     >
-      {isPending ? "Connecting..." : "Pay with BenefitPay"}
+      {isPending
+        ? isAr
+          ? "جاري الاتصال..."
+          : "Connecting..."
+        : isAr
+          ? "الدفع عبر بينفت باي"
+          : "Pay with BenefitPay"}
     </Button>
   );
 }

@@ -1,10 +1,8 @@
 "use server";
 import CategoriesGrid from "@/components/categories";
 import ProductList from "@/components/shared/products/product-list";
-import { Button } from "@/components/ui/button";
-import { getLatestProducts } from "@/lib/actions/products.actions";
+import { getFeaturedProducts } from "@/lib/actions/products.actions";
 import { Metadata } from "next";
-import Link from "next/link";
 import BannerSlider from "./banners";
 
 type Props = {
@@ -26,24 +24,28 @@ const Homepage = async ({
   params: Promise<{ locale: string }>;
 }) => {
   const { locale } = await params;
-  //const { header } = await getPageContent("page", locale); if needed
-  /*console.log(` language: ${locale}`);
-  console.log(await getLatestProducts());*/ //testing
-  const data = await getLatestProducts();
+  const data = await getFeaturedProducts(8);
   const isAr = locale === "ar";
 
   return (
     <>
       <BannerSlider />
-      <h2 className="h2-bold mb-4 ">
-        {isAr ? "تسوق حسب الفئة" : "Shop by Category"}
-      </h2>
-      <CategoriesGrid locale={locale} />
-      <div className=" mx-auto px-4">
+      <div className="wrapper">
+        <div className="mb-4 text-center">
+          <h2 className="h2-bold">
+            {isAr ? "تسوق حسب الفئة" : "Shop by Category"}
+          </h2>
+          <p className="mt-1 text-muted-foreground">
+            {isAr
+              ? "اكتشف مجموعتنا عبر الفئات المختارة بعناية"
+              : "Discover our curated range across every category"}
+          </p>
+        </div>
+        <CategoriesGrid locale={locale} />
         <ProductList
           data={data}
           title={isAr ? "المنتجات المميزة" : "Featured Products"}
-          limit={5}
+          limit={8}
           locale={locale}
         />
       </div>

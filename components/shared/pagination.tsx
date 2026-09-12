@@ -7,9 +7,11 @@ type PaginationProps = {
   page: number | string;
   totalPages: number;
   urlParamName?: string;
+  locale?: string;
 };
 
-const Pagination = ({ page, totalPages, urlParamName }: PaginationProps) => {
+const Pagination = ({ page, totalPages, urlParamName, locale = "en" }: PaginationProps) => {
+  const isAr = locale !== "en";
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -34,7 +36,7 @@ const Pagination = ({ page, totalPages, urlParamName }: PaginationProps) => {
         disabled={Number(page) <= 1}
         onClick={() => onClick("prev")}
       >
-        Previous
+        {isAr ? "السابق" : "Previous"}
       </Button>
       <span>{page}</span>
       <Button
@@ -44,7 +46,7 @@ const Pagination = ({ page, totalPages, urlParamName }: PaginationProps) => {
         disabled={Number(page) >= totalPages}
         onClick={() => onClick("next")}
       >
-        Next
+        {isAr ? "التالي" : "Next"}
       </Button>
     </div>
   );

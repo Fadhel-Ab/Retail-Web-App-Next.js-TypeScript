@@ -153,7 +153,7 @@ export default function OrderDetailsTable({
                 <div>{locale === "en" ? "Total Price" : "المبلغ الإجمالي"}</div>
                 <div>{formatCurrency(totalPrice)}</div>
               </div>
-              {!isPaid && <BenefitPayButton orderId={id} />}
+              {!isPaid && <BenefitPayButton orderId={id} locale={locale} />}
             </CardContent>
           </Card>
           {!isPaid && (

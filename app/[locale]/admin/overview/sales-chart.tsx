@@ -14,16 +14,14 @@ import { PcCase } from "lucide-react";
    totalSales: number;
  };
 
-const chartConfig = {
-  desktop: {
-    label: "Sales",
-    color: "var(--chart-1)",
-  },
-} satisfies ChartConfig;
-
-
 const SalesChart = ({data, locale}: { data: Props[]; locale:string }) => {
-    console.log(data);
+  const chartConfig = {
+    desktop: {
+      label: locale === "en" ? "Sales" : "المبيعات",
+      color: "var(--chart-1)",
+    },
+  } satisfies ChartConfig;
+
   return (
     <div>
       <ChartContainer config={chartConfig}>

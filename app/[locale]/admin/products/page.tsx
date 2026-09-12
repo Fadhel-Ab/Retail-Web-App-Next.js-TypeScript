@@ -133,7 +133,7 @@ export default async function AdminProductsPage({
       </div>
 
       {totalPages > 1 && (
-        <Pagination page={currentPage} totalPages={totalPages} />
+        <Pagination page={currentPage} totalPages={totalPages} locale={locale} />
       )}
     </div>
   );

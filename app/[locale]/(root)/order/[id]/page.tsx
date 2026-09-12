@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   // Fetch localized content for the sign-in page
   return {
-    title: locale === "en" ? "Order Details" : "", // This will be plugged into your layout's %s template
+    title: locale === "en" ? "Order Details" : "تفاصيل الطلب", // This will be plugged into your layout's %s template
   };
 }
 

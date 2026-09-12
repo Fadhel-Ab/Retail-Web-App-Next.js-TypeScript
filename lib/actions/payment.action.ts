@@ -80,7 +80,7 @@ export async function verifyPayment(orderId: string, tapId: string) {
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${process.env.TEST_KEY}`,
+          Authorization: `Bearer ${process.env.TAP_SECRET_KEY}`,
           accept: "application/json",
         },
       },

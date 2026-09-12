@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const amount = body.amount;
 
     const secretKey = process.env.TAP_SECRET_KEY!;
-    const publicKey = process.env.NEXT_PUBLIC_TAP_PUBLIC_KEY!;
+    const publicKey = process.env.TAP_PUBLIC_KEY!;
     const merchantId = process.env.TAP_MERCHANT_ID!;
 
     const currency = "BHD";

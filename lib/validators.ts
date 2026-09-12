@@ -5,7 +5,10 @@ import { getPageContent } from "./custom-hooks/intlayer-hook";
 import { PAYMENT_METHODS } from "./constants";
 
 // zod schema for inserting product
-const arabicRegex = /^[\u0600-\u06FF\s]+$/;
+// requires the text to include at least one Arabic character, rather than
+// consist entirely of Arabic characters \u2014 real product data routinely mixes
+// in digits, sizes, or Latin brand names (e.g. "\u0627\u064A\u0641\u0648\u0646 15 \u0628\u0631\u0648")
+const arabicRegex = /[\u0600-\u06FF]/;
 const priceRegex = /^\d+(.\d{2})?$/;
 const currency = z
   .string()
@@ -23,7 +26,7 @@ export const insertProductSchema = z.object({
   nameAr: z
     .string()
     .regex(arabicRegex, {
-      message: "Arabic Name Must contain only Arabic characters",
+      message: "Arabic Name must include Arabic characters",
     })
     .min(3, "Arabic Name Must be at least 3 characters"),
   slug: z.string().min(3, "Slug must be at least 3 characters"),
@@ -31,21 +34,21 @@ export const insertProductSchema = z.object({
   categoryAr: z
     .string()
     .regex(arabicRegex, {
-      message: "Arabic Category Must contain only Arabic characters",
+      message: "Arabic Category must include Arabic characters",
     })
     .min(3, "Arabic Category Must be at least 3 characters"),
   brand: z.string().min(3, "Brand must be at least 3 characters "),
   brandAr: z
     .string()
     .regex(arabicRegex, {
-      message: "Arabic Brand Must contain only Arabic characters",
+      message: "Arabic Brand must include Arabic characters",
     })
     .min(3, "Arabic Brand Must be at least 3 characters"),
   description: z.string().min(3, "Description must be at least 3 characters"),
   descriptionAr: z
     .string()
     .regex(arabicRegex, {
-      message: "Arabic Description Must contain only Arabic characters",
+      message: "Arabic Description must include Arabic characters",
     })
     .min(3, "Arabic Description Must be at least 3 characters"),
   stock: z.coerce.number(),
@@ -115,7 +118,7 @@ export const cartItemSchema = z.object({
   nameAr: z
     .string()
     .regex(arabicRegex, {
-      message: "Arabic Name Must contain only Arabic characters",
+      message: "Arabic Name must include Arabic characters",
     })
     .min(3, "Arabic Name Must be at least 3 characters"),
   slug: z.string().min(1, "Product is required"),
